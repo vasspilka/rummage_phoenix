@@ -56,22 +56,22 @@ defmodule Rummage.Phoenix.Controller do
 
         %{per_page: per_page, page: 1}
       end
-    end
-  end
 
-  @doc false
-  def __rummage_search_params__(p), do: p
+      @doc false
+      def __rummage_search_params__(p), do: p
 
-  @doc false
-  def __rummage_sort_params__(p), do: p
+      @doc false
+      def __rummage_sort_params__(p), do: p
 
-  @doc false
-  def __rummage_paginate_params__(params) do
-    Enum.reduce(~w{per_page page}, %{}, fn key, acc ->
-      case Map.get(params, key) do
-        nil -> acc
-        value -> Map.put(acc, :"#{key}", String.to_integer(value))
+      @doc false
+      def __rummage_paginate_params__(params) do
+        Enum.reduce(~w{per_page page}, %{}, fn key, acc ->
+          case Map.get(params, key) do
+            nil -> acc
+            value -> Map.put(acc, :"#{key}", String.to_integer(value))
+          end
+        end)
       end
-    end)
+    end
   end
 end
