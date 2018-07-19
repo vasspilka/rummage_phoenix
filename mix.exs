@@ -11,14 +11,14 @@ defmodule Rummage.Phoenix.Mixfile do
       version: @version,
       elixir: @elixir,
       deps: deps(),
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
 
       # Test
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [coveralls: :test],
       aliases: aliases(),
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
 
       # Hex
       description: description(),
@@ -26,7 +26,7 @@ defmodule Rummage.Phoenix.Mixfile do
 
       # Docs
       name: "Rumamge.Phoenix",
-      docs: docs(),
+      docs: docs()
     ]
   end
 
@@ -35,20 +35,20 @@ defmodule Rummage.Phoenix.Mixfile do
       applications: [
         :logger,
         :phoenix_html,
-        :phoenix,
+        :phoenix
         # :rummage_ecto,
-      ],
+      ]
     ]
   end
 
   def package do
-  [
-    files: ["lib", "mix.exs",  "README.md"],
-    maintainers: ["Adi Iyengar"],
-    licenses: ["MIT"],
-    links: %{"Github" => @url},
-  ]
-end
+    [
+      files: ["lib", "mix.exs", "README.md"],
+      maintainers: ["Adi Iyengar"],
+      licenses: ["MIT"],
+      links: %{"Github" => @url}
+    ]
+  end
 
   defp deps do
     [
@@ -61,7 +61,7 @@ end
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:excoveralls, "~> 0.8", only: :test, runtime: false},
       {:inch_ex, "~> 0.5", only: [:dev, :test, :docs], runtime: false},
-      {:postgrex, "~> 0.13", only: :test, optional: true, runtime: false},
+      {:postgrex, "~> 0.13", only: :test, optional: true, runtime: false}
       # {:rummage_ecto, "~> 2.0.0-rc.0"},
       # {:rummage_ecto, path: "../rummage_ecto"},
     ]
@@ -78,10 +78,12 @@ end
     [
       main: "Rummage.Phoenix",
       source_url: @url,
-      extras: ["README.md",
-               "CHANGELOG.md",
-               "docs/Nomenclature.md",
-               "docs/Walkthrough.md"],
+      extras: [
+        "README.md",
+        "CHANGELOG.md",
+        "docs/Nomenclature.md",
+        "docs/Walkthrough.md"
+      ],
       source_ref: "v#{@version}"
     ]
   end
@@ -90,10 +92,10 @@ end
     [
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.setup --quite", "test"],
+      test: ["ecto.setup --quite", "test"]
     ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "priv", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 end

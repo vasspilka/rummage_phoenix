@@ -15,14 +15,19 @@ defmodule Rummage.Phoenix.Controller do
 
       @doc false
       def rummage_params(nil), do: rummage_params(%{})
+
       def rummage_params(%{} = rummage_params) do
-        Enum.reduce(~w{search sort paginate}, %{}, fn(key, acc) ->
+        Enum.reduce(~w{search sort paginate}, %{}, fn key, acc ->
           case Map.get(rummage_params, key) do
-            nil -> __call_fn__(key, acc)
+            nil ->
+              __call_fn__(key, acc)
+
             value ->
-              Map.put(acc,
-                      :"#{key}",
-                      apply(__MODULE__, :"__rummage_#{key}_params__", [value]))
+              Map.put(
+                acc,
+                :"#{key}",
+                apply(__MODULE__, :"__rummage_#{key}_params__", [value])
+              )
           end
         end)
       end
@@ -30,19 +35,24 @@ defmodule Rummage.Phoenix.Controller do
       defp __call_fn__(key, acc) do
         case function_exported?(__MODULE__, :"__rummage_default_#{key}_params__", 0) do
           true ->
-            Map.put(acc,
-                    :"#{key}",
-                    apply(__MODULE__, :"__rummage_default_#{key}_params__", []))
-          false -> acc
+            Map.put(
+              acc,
+              :"#{key}",
+              apply(__MODULE__, :"__rummage_default_#{key}_params__", [])
+            )
+
+          false ->
+            acc
         end
       end
 
       @doc false
       def __rummage_default_paginate_params__ do
-        per_page = case unquote(rummage_ecto_app) do
-          nil -> Rummage.Ecto.Config.per_page
-          app -> Rummage.Ecto.Config.per_page(app)
-        end
+        per_page =
+          case unquote(rummage_ecto_app) do
+            nil -> Rummage.Ecto.Config.per_page()
+            app -> Rummage.Ecto.Config.per_page(app)
+          end
 
         %{per_page: per_page, page: 1}
       end
@@ -57,7 +67,7 @@ defmodule Rummage.Phoenix.Controller do
 
   @doc false
   def __rummage_paginate_params__(params) do
-    Enum.reduce(~w{per_page page}, %{}, fn(key, acc) ->
+    Enum.reduce(~w{per_page page}, %{}, fn key, acc ->
       case Map.get(params, key) do
         nil -> acc
         value -> Map.put(acc, :"#{key}", String.to_integer(value))
